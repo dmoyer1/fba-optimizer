@@ -138,12 +138,21 @@ async function handleStripeWebhook(request, env) {
 
       await env.FBA_OPTIMIZER_KV.put(`email:${email}`, apiKey);
 
-      // TODO: Send email with API key
-      // For now log it (you'll see this in Cloudflare Worker logs)
       console.log(`New subscriber: ${email} | API Key: ${apiKey}`);
 
-      // In production, send via Mailgun/SendGrid:
-      // await sendWelcomeEmail(env, email, apiKey);
+      // Send welcome email via Mailgun
+      if (env.MAILGUN_API_KEY) {
+        await fetch('https://api.mailgun.net/v3/threshside.com/messages', {
+          method: 'POST',
+          headers: { 'Authorization': 'Basic ' + btoa('api:' + env.MAILGUN_API_KEY) },
+          body: new URLSearchParams({
+            from: 'FBA Tools <tools@threshside.com>',
+            to: email,
+            subject: 'Your FBA Listing Optimizer API Key',
+            text: `Hi,\n\nWelcome to FBA Listing Optimizer!\n\nYour API key: ${apiKey}\n\nTo activate:\n1. Go to https://tools.threshside.com\n2. Click "Have an API key?" at the top\n3. Paste your key and click Save\n\nYou now have unlimited optimizations. Questions? Reply to this email.\n\n— Threshside Team\nhttps://threshside.com`
+          })
+        });
+      }
     }
   }
 
