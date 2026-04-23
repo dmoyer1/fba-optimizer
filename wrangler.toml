@@ -1,0 +1,16 @@
+name = "fba-optimizer"
+main = "worker.js"
+compatibility_date = "2024-01-01"
+account_id = "ff88bd4b6115c4993e16ad91a311cdb0"
+
+[[kv_namespaces]]
+binding = "FBA_OPTIMIZER_KV"
+id = "REPLACE_WITH_KV_NAMESPACE_ID"
+
+[vars]
+ENVIRONMENT = "production"
+
+# Secrets (set via: wrangler secret put SECRET_NAME)
+# ANTHROPIC_API_KEY
+# STRIPE_SECRET_KEY
+# STRIPE_WEBHOOK_SECRET
