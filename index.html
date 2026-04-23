@@ -357,9 +357,40 @@ function escHtml(str) {
   return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
+// Handle post-payment redirect
+function checkPostPayment() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('subscribed') === '1') {
+    // Show success banner
+    const banner = document.createElement('div');
+    banner.style.cssText = 'background:#10B981;color:#fff;text-align:center;padding:0.85rem 1.5rem;font-weight:600;font-size:0.95rem;position:sticky;top:0;z-index:100';
+    banner.innerHTML = '🎉 Payment successful! Check your email for your API key — then paste it below to unlock unlimited optimizations.';
+    document.body.insertBefore(banner, document.body.firstChild);
+
+    // Show API key section prominently
+    const apiSection = document.getElementById('apikey-section');
+    apiSection.style.display = 'flex';
+    apiSection.style.borderColor = 'var(--accent)';
+    apiSection.style.background = '#F59E0B11';
+
+    // Add helper label
+    const label = document.createElement('span');
+    label.style.cssText = 'font-size:0.8rem;color:var(--accent);width:100%;margin-top:-0.25rem';
+    label.textContent = '👆 Paste your API key from the welcome email here';
+    apiSection.after(label);
+
+    // Scroll to tool
+    setTimeout(() => document.querySelector('.tool').scrollIntoView({ behavior: 'smooth' }), 400);
+
+    // Clean URL
+    window.history.replaceState({}, '', '/');
+  }
+}
+
 // Init
 updateFreeBar();
 setupSubscribeButtons();
+checkPostPayment();
 </script>
 </body>
 </html>
